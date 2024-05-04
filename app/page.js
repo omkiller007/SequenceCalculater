@@ -6,93 +6,130 @@ function InterpolatedTermCalculator() {
   const [result, setResult] = useState("");
   const [steps, setSteps] = useState("");
 
-  function findFormula(sequence) {
-    const numbers = sequence.split(",").map(Number);
-    const n = numbers.length;
+  const parseSequence = (sequenceString) => {
+    return sequenceString.split(",").map((str) => parseFloat(str.trim()));
+  };
 
-    let steps = "";
-
+  const isArithmeticSequence = (sequenceArray) => {
     const differences = [];
-    for (let i = 1; i < n; i++) {
-      differences.push(numbers[i] - numbers[i - 1]);
+    for (let i = 1; i < sequenceArray.length; i++) {
+      differences.push(sequenceArray[i] - sequenceArray[i - 1]);
     }
+    return differences.every((diff) => diff === differences[0]);
+  };
 
-    steps += "Differences: " + differences.join(", ") + "\n\n";
-
-    let formula = "";
-
-    // Check for cubic sequence
-    const isCubic = differences.every((val) => val === differences[0]);
-    if (isCubic) {
-      formula = `t(n) = ${differences[0] / 6}*n^3`;
-    } else {
-      // Check for polynomial sequences up to degree 3
-      if (n >= 2) {
-        const coefficients = [];
-        for (let i = 1; i <= 3; i++) {
-          const coeffs = [];
-          for (let j = 0; j < i; j++) {
-            coeffs.push(nCr(i - 1, j) * differences[i - 1 - j]);
-          }
-          coefficients.push(coeffs.reduce((acc, curr) => acc + curr, 0));
-        }
-        formula = "t(n) = ";
-        for (let i = 3; i >= 0; i--) {
-          if (coefficients[i] !== 0) {
-            formula += `${coefficients[i]}*n^${i}`;
-            if (i !== 0) formula += " + ";
-          }
-        }
-      } else {
-        // If none of the patterns fit, default to constant sequence
-        formula = `t(n) = ${numbers[0]}`;
-      }
+  const isGeometricSequence = (sequenceArray) => {
+    const ratios = [];
+    for (let i = 1; i < sequenceArray.length; i++) {
+      ratios.push(sequenceArray[i] / sequenceArray[i - 1]);
     }
+    return ratios.every((ratio) => ratio === ratios[0]);
+  };
 
-    return { formula, steps };
-  }
+  const isQuadraticSequence = (sequenceArray) => {
+    const secondDifferences = [];
+    for (let i = 1; i < sequenceArray.length - 1; i++) {
+      secondDifferences.push(
+        sequenceArray[i + 1] - 2 * sequenceArray[i] + sequenceArray[i - 1]
+      );
+    }
+    return secondDifferences.every((diff) => diff === secondDifferences[0]);
+  };
 
-  // Function to calculate binomial coefficient
-  function nCr(n, r) {
-    if (r > n) return 0;
-    if (r === 0 || n === r) return 1;
-    return nCr(n - 1, r - 1) + nCr(n - 1, r);
-  }
+  const isCubicSequence = (sequenceArray) => {
+    const cubicDifferences = [];
+    for (let i = 1; i < sequenceArray.length - 2; i++) {
+      cubicDifferences.push(
+        sequenceArray[i + 2] -
+          3 * sequenceArray[i + 1] +
+          3 * sequenceArray[i] -
+          sequenceArray[i - 1]
+      );
+    }
+    return cubicDifferences.every((diff) => diff === cubicDifferences[0]);
+  };
 
-  const handleCalculate = () => {
-    if (!sequence) {
-      setResult("Please enter a sequence.");
-      setSteps("");
+  const calculateArithmeticFormula = (sequenceArray) => {
+    const commonDifference = sequenceArray[1] - sequenceArray[0];
+    const firstTerm = sequenceArray[0];
+    return `an = ${firstTerm} + (n - 1) * ${commonDifference}`;
+  };
+
+  const calculateGeometricFormula = (sequenceArray) => {
+    const commonRatio = sequenceArray[1] / sequenceArray[0];
+    const firstTerm = sequenceArray[0];
+    return `an = ${firstTerm} * ${commonRatio}^(n - 1)`;
+  };
+
+  const calculateQuadraticFormula = (sequenceArray) => {
+    const a =
+      0.5 * (sequenceArray[2] - 2 * sequenceArray[1] + sequenceArray[0]);
+    const b = sequenceArray[1] - sequenceArray[0] + a;
+    const c = sequenceArray[0];
+    return `an = ${a} * n^2 + ${b} * n + ${c}`;
+  };
+
+  const calculateCubicFormula = (sequenceArray) => {
+    const a =
+      sequenceArray[3] -
+      3 * sequenceArray[2] +
+      3 * sequenceArray[1] -
+      sequenceArray[0];
+    const b =
+      sequenceArray[2] - 3 * sequenceArray[1] + 3 * sequenceArray[0] - a;
+    const c = sequenceArray[1] - 3 * sequenceArray[0] + a;
+    const d = sequenceArray[0];
+    return `an = ${a} * n^3 + ${b} * n^2 + ${c} * n + ${d}`;
+  };
+
+  const calculateSequence = () => {
+    const sequenceArray = parseSequence(sequence);
+
+    if (sequenceArray.length < 2) {
+      setResult("Sequence must have at least two terms.");
       return;
     }
-    const { formula, steps } = findFormula(sequence);
-    setResult(formula);
-    setSteps(steps);
+
+    if (isArithmeticSequence(sequenceArray)) {
+      setResult(
+        `Arithmetic Sequence:\n${calculateArithmeticFormula(sequenceArray)}`
+      );
+    } else if (isGeometricSequence(sequenceArray)) {
+      setResult(
+        `Geometric Sequence:\n${calculateGeometricFormula(sequenceArray)}`
+      );
+    } else if (isQuadraticSequence(sequenceArray)) {
+      setResult(
+        `Quadratic Sequence:\n${calculateQuadraticFormula(sequenceArray)}`
+      );
+    } else if (isCubicSequence(sequenceArray)) {
+      setResult(`Cubic Sequence:\n${calculateCubicFormula(sequenceArray)}`);
+    } else {
+      setResult("Sequence does not match known patterns.");
+    }
   };
 
   return (
     <div>
       <div className="max-w-md mx-auto p-6 mt-44 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">
-          Interpolated Term Calculator
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">حاسبة الحد العام للمتتاليات</h2>
         <div>
-          <label className="block font-semibold mb-1">Sequence:</label>
+          <label className="block font-semibold mb-1"></label>
           <input
             type="text"
             value={sequence}
             onChange={(e) => setSequence(e.target.value)}
-            placeholder="Enter the sequence (e.g., 4,14,40,88,168)"
+            placeholder="ادخل النمط"
             className="w-full px-4 py-2 mb-4 border rounded-lg"
           />
         </div>
         <button
-          onClick={handleCalculate}
-          className="w-full bg-[#ff1500] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#c3c3c3] transition duration-300">
-          Calculate
+          onClick={calculateSequence}
+          className="w-full bg-[#98FF98] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#c3c3c3] transition duration-300">
+          احسب{" "}
         </button>
         <div className="mt-4 text-xl font-semibold">{result}</div>
-        <div className="mt-4 text-sm font-semibold">Steps:</div>
+        <div className="mt-4 text-sm font-semibold"></div>
         <pre className="mt-2 whitespace-pre-wrap">{steps}</pre>
       </div>
       <div className=" border-t-[0.01px] border-[#c3c3c3] items-center text-center mt-[200px]">
