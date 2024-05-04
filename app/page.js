@@ -111,15 +111,17 @@ function InterpolatedTermCalculator() {
 
   return (
     <div>
-      <div className="max-w-md mx-auto p-6 mt-44 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">حاسبة الحد العام للمتتاليات</h2>
+      <div className="max-w-md mx-auto p-6 mt-44 bg-white rounded-lg shadow-md text-[#3c3c3c] ">
+        <h2 className="text-2xl font-bold mb-4 text-[#3c3c3c]">
+          حاسبة الحد العام للمتتاليات
+        </h2>
         <div>
           <label className="block font-semibold mb-1"></label>
           <input
             type="text"
             value={sequence}
             onChange={(e) => setSequence(e.target.value)}
-            placeholder="ادخل النمط"
+            placeholder="اجد الحد العام"
             className="w-full px-4 py-2 mb-4 border rounded-lg"
           />
         </div>
