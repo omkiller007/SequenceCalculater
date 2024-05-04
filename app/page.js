@@ -52,13 +52,13 @@ function InterpolatedTermCalculator() {
   const calculateArithmeticFormula = (sequenceArray) => {
     const commonDifference = sequenceArray[1] - sequenceArray[0];
     const firstTerm = sequenceArray[0];
-    return `an = ${firstTerm} + (n - 1) * ${commonDifference}`;
+    return `t(n) = ${firstTerm} + (n - 1) * ${commonDifference}`;
   };
 
   const calculateGeometricFormula = (sequenceArray) => {
     const commonRatio = sequenceArray[1] / sequenceArray[0];
     const firstTerm = sequenceArray[0];
-    return `an = ${firstTerm} * ${commonRatio}^(n - 1)`;
+    return `t(n) = ${firstTerm} * ${commonRatio}^(n - 1)`;
   };
 
   const calculateQuadraticFormula = (sequenceArray) => {
@@ -66,7 +66,7 @@ function InterpolatedTermCalculator() {
       0.5 * (sequenceArray[2] - 2 * sequenceArray[1] + sequenceArray[0]);
     const b = sequenceArray[1] - sequenceArray[0] + a;
     const c = sequenceArray[0];
-    return `an = ${a} * n^2 + ${b} * n + ${c}`;
+    return `t(n) = ${a} * n^2 + ${b} * n + ${c}`;
   };
 
   const calculateCubicFormula = (sequenceArray) => {
@@ -79,7 +79,7 @@ function InterpolatedTermCalculator() {
       sequenceArray[2] - 3 * sequenceArray[1] + 3 * sequenceArray[0] - a;
     const c = sequenceArray[1] - 3 * sequenceArray[0] + a;
     const d = sequenceArray[0];
-    return `an = ${a} * n^3 + ${b} * n^2 + ${c} * n + ${d}`;
+    return `t(n) = ${a} * n^3 + ${b} * n^2 + ${c} * n + ${d}`;
   };
 
   const calculateSequence = () => {
@@ -92,18 +92,18 @@ function InterpolatedTermCalculator() {
 
     if (isArithmeticSequence(sequenceArray)) {
       setResult(
-        `Arithmetic Sequence:\n${calculateArithmeticFormula(sequenceArray)}`
+        `\n${calculateArithmeticFormula(sequenceArray)}`
       );
     } else if (isGeometricSequence(sequenceArray)) {
       setResult(
-        `Geometric Sequence:\n${calculateGeometricFormula(sequenceArray)}`
+        `\n${calculateGeometricFormula(sequenceArray)}`
       );
     } else if (isQuadraticSequence(sequenceArray)) {
       setResult(
-        `Quadratic Sequence:\n${calculateQuadraticFormula(sequenceArray)}`
+        `\n${calculateQuadraticFormula(sequenceArray)}`
       );
     } else if (isCubicSequence(sequenceArray)) {
-      setResult(`Cubic Sequence:\n${calculateCubicFormula(sequenceArray)}`);
+      setResult(`\n${calculateCubicFormula(sequenceArray)}`);
     } else {
       setResult("Sequence does not match known patterns.");
     }
@@ -111,7 +111,7 @@ function InterpolatedTermCalculator() {
 
   return (
     <div>
-      <div className="max-w-md mx-auto p-6 mt-44 bg-white rounded-lg shadow-md text-[#3c3c3c] ">
+      <div className="max-w-md mx-auto px-9 p-6 mt-44 bg-white rounded-lg shadow-md text-[#3c3c3c] ">
         <h2 className="text-2xl font-bold mb-4 text-[#3c3c3c]">
           حاسبة الحد العام للمتتاليات
         </h2>
